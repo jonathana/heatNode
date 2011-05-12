@@ -1,0 +1,40 @@
+<html>
+	<head>
+		<title>test page for node heatmapper</title>
+		<link rel="stylesheet" type="text/css" href="/css/lytebox_heatmap.css"/>
+		<script type="text/javascript" src="/js/jquery-1.5.2.min.js"></script>
+		<script type="text/javascript" src="/js/lytebox_heatmap.js"></script>
+		<script type="text/javascript">
+			function analyzeSourceElement(srcElement)
+			{
+				var srcInfo;
+				if (srcElement instanceof HTMLAnchorElement) {
+					srcInfo = srcElement.href;
+				}
+				else { srcInfo = srcElement.id; }
+
+				if (srcInfo == '') { srcInfo = srcElement.tagName.toLowerCase(); }
+
+				return srcInfo
+			}
+
+			$(document).ready(function() {
+				$(document.body).mousedown(function(e){
+					var clickTarget = analyzeSourceElement(e.srcElement);
+					var url = '/logEvent?type=click' +
+						'&x=' + e.pageX +
+						'&y=' + e.pageY +
+						'&clickTarget=' + encodeURIComponent(clickTarget);
+					$.post(url, function(data) { return true; });
+					return true;
+				});
+			});
+		</script>
+	</head>
+	<body>
+		<a href="#" rel="htNodeHeatmap" title="Page heatmap">Show heatmap</a>
+		<h3>test page for node heatmapper<h3>
+		<div style="height:800px">Just taking up space</style>
+		<h3>end of page</h3>
+	</body>
+</html>
