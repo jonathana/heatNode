@@ -3,18 +3,6 @@ var mongoose = require('mongoose'),
 
 // not sure what a good naming convention for schema vars is so for now we'll CamelCase
 
-/*
-var ClickEvent = new Schema({
-	clickTarget	: String
-	, pageUrl	: String
-	, clickPoint	: {
-		X	: Number
-		, Y	: Number
-	}
-	//, clickPoint	: Point
-});
-*/
-
 var HeatEvent = new Schema({
 	type		: { type: String, enum: ['click']}
 	, eventStamp	: { type: Date,	default: Date.now } 

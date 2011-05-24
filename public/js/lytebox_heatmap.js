@@ -37,9 +37,18 @@ NODEHeatmap.prototype.ActivateLinks = function() {
 		}
 	}
 };
+
+NODEHeatmap.prototype.generateWindowSizeQueryString = function() {
+	return "?wx=" + $(window).width() + "&wy=" + $(window).height();
+};
+
 NODEHeatmap.prototype.start = function(imageLink) {
 	if (imageLink.getAttribute('rel').toLowerCase() == 'htnodeheatmap') { 
-		var imageInfo = { 'href': '/heatmap' + this.calculateUriPath(), 'title': imageLink.getAttribute('title')};
+		var imageInfo = {
+			'href': '/heatmap' + this.calculateUriPath() + this.generateWindowSizeQueryString(),
+			'title': imageLink.getAttribute('title')
+		};
+
 		if (imageInfo['href'] != '') {
 			var xmlDoc = null ;
 			if (typeof window.ActiveXObject != 'undefined' ) {
