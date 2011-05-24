@@ -15,6 +15,7 @@ var HeatEvent = new Schema({
 		}
 	}
 });
+HeatEvent.index({ 'type': 1, 'payload.pageUrl': 1});
 
 var db = mongoose.connect('mongodb://localhost/heatNode');
 module.exports = db.model('heatEvent', HeatEvent);

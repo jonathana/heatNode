@@ -59,7 +59,7 @@ app.post('/logEvent', function(req, res){
 });
 
 app.get('/heatmap/:url', function(req, res){
-	HeatEvent.find({ 'payload.pageUrl' : req.params.url}, function(err, docs) {
+	HeatEvent.find({'type': 'click', 'payload.pageUrl' : req.params.url}, function(err, docs) {
 		var heatMapper = new HeatmapGenerator()
 		heatMapper.GenerateImage(docs, function(err, imageBuf) {
 			if (err) { res.send(404); }
