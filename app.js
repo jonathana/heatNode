@@ -40,8 +40,6 @@ app.configure('production', function(){
 
 app.post('/logEvent', function(req, res){
 	res.send(204);
-	var h = new HeatEvent;
-	h.type = 'click';
 	var pagePath = '';
 	if ( req.headers.referer != '') {
 		// @TODO double-check that url.parse does decodeURI
@@ -51,6 +49,8 @@ app.post('/logEvent', function(req, res){
 			pagePath = urlObj.pathname.substring(1);
 		}
 	}
+	var h = new HeatEvent;
+	h.type = 'click';
 	h.payload.pageUrl = pagePath;
 	h.payload.clickTarget = req.query.clickTarget;
 	h.payload.clickPoint.X = Number(req.query.x) || -1;
