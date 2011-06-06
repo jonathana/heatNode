@@ -38,6 +38,10 @@ app.configure('production', function(){
 
 // Routes
 
+app.get('/favicon.ico', function(req, res){
+    res.end(404);
+});
+
 app.post('/logEvent', function(req, res){
 	res.send(204);
 	var pagePath = '';
@@ -59,9 +63,11 @@ app.post('/logEvent', function(req, res){
 });
 
 app.get('/heatmap/:url', function(req, res){
+    var xWidth = parseInt(req.query.wx);
+    var yWidth = parseInt(req.query.wy);
 	HeatEvent.find({'type': 'click', 'payload.pageUrl' : req.params.url}, function(err, docs) {
-		var heatMapper = new HeatmapGenerator()
-		heatMapper.GenerateImage(docs, function(err, imageBuf) {
+		var heatMapper = new HeatmapGenerator();
+		heatMapper.GenerateImage(docs, xWidth, yWidth, function(err, imageBuf) {
 			if (err) { res.send(404); }
 			else {
 				res.setHeader('Content-Length', imageBuf.length);
