@@ -39,7 +39,8 @@ NODEHeatmap.prototype.ActivateLinks = function() {
 };
 
 NODEHeatmap.prototype.generateWindowSizeQueryString = function() {
-	return "?wx=" + $(window).width() + "&wy=" + $(window).height();
+	return "?wx=" + $(window).width() + "&wy=" + $(window).height()
+			+ '&force=' + encodeURIComponent((new Date()).getTime());
 };
 
 NODEHeatmap.prototype.start = function(imageLink) {
@@ -70,9 +71,6 @@ NODEHeatmap.prototype.start = function(imageLink) {
 			var objOverlay	= this.doc.getElementById('htNodeHOverlay');
 			var objBody		= this.doc.getElementsByTagName("body").item(0);
 			
-			objOverlay.style.height = pageSize[1] + "px";
-			objOverlay.style.display = '';
-			
 			var imgObj = this.doc.getElementById(this.imgId);
 			if (imgObj) {
 				objOverlay.removeChild(imgObj);
@@ -86,7 +84,8 @@ NODEHeatmap.prototype.start = function(imageLink) {
 			objOverlay.style.top = "0px";
 			objOverlay.style.left = "0px";
 			objOverlay.style.height = pageSize[1] + "px";
-			
+			objOverlay.style.display = '';
+
 			if (this.ie && !this.ie7) {	this.toggleSelects('hide');	}
 			
 			// Hide flash objects (should add a boolean to disable this)
@@ -103,7 +102,7 @@ NODEHeatmap.prototype.calculateUriPath = function() {
 	var domain = this.doc.domain;
 	var hostMatch = uri.match('\/\/([^:\/]+:)?' + domain + '(:[0-9]+)?\/([^?#]+)');
 	if (hostMatch) {
-		path = '/' + hostMatch[3];
+		path = '/' + hostMatch[3] + '.png';
 	}
 	return path;
 }
