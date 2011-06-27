@@ -13,7 +13,9 @@ var config = require('./config');
 var app = module.exports = express.createServer();
 
 prodModeVar = process.env.name;
-listenPort = 4000 //process.sparkEnv.port;
+listenPort = 3000;
+var noHitImagePage = '/img/noHits.png';
+var failImagePage = '/img/renderFail.png';
 
 app.use(express.compiler({ src: __dirname + '/public', enable: ['less'] }));
 app.use(express.bodyParser());
@@ -64,8 +66,8 @@ app.post('/logEvent', function(req, res){
 
 app.get('/heatmap/:url', function(req, res){
 	var filenameExt = '.png';
-    var xWidth = parseInt(req.query.wx);
-    var yWidth = parseInt(req.query.wy);
+	var xWidth = parseInt(req.query.wx);
+	var yWidth = parseInt(req.query.wy);
 	var httpVer = req.httpVersion;
 	var reqUrl = req.params.url;
 
@@ -74,21 +76,33 @@ app.get('/heatmap/:url', function(req, res){
 	}
 
 	HeatEvent.find({'type': 'click', 'payload.pageUrl' : reqUrl}, function(err, docs) {
-		var heatMapper = new HeatmapGenerator();
-		heatMapper.GenerateImage(docs, xWidth, yWidth, function(err, imageBuf) {
-			if (err) { res.send(404); }
-			else {
-				var now = new Date();
-				res.setHeader('Content-Length', imageBuf.length);
-				res.setHeader('Content-Type', 'image/png');
-				// Better hope no pre-1.0 or 1.0.x/pre1.1 servers are floating around
-				if ( httpVer != '1.0') {
-					res.setHeader('Cache-Control', 'max-age=30, s-maxage=30, no-cache, must-revalidate, proxy-revalidate');
-				}
-				res.setHeader('Expires', now.toUTCString());
-				res.end(imageBuf);
+		if (err) {
+			res.redirect(failImagePage);
+		}
+		else
+		{
+			if (docs.length == 0){
+				res.redirect(noHitImagePage);
 			}
-		});
+			else
+			{
+				var heatmapper = new HeatmapGenerator();
+				heatmapper.GenerateImage(docs, xWidth, yWidth, function(err, imageBuf) {
+					if (err) { res.redirect(failImagePage); }
+					else {
+						var now = new Date();
+						res.setHeader('Content-Length', imageBuf.length);
+						res.setHeader('Content-Type', 'image/png');
+						// Better hope no pre-1.0 or 1.0.x/pre1.1 servers are floating around
+						if ( httpVer != '1.0') {
+							res.setHeader('Cache-Control', 'max-age=30, s-maxage=30, no-cache, must-revalidate, proxy-revalidate');
+						}
+						res.setHeader('Expires', now.toUTCString());
+						res.end(imageBuf);
+					}
+				});
+			}
+		}
 	});
 });
 

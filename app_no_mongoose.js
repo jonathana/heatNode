@@ -14,7 +14,9 @@ var app = module.exports = express.createServer();
 var heatmapProvider = new HeatmapProvider('localhost', 27017);
 
 prodModeVar = process.env.name;
-listenPort = 4000 //process.sparkEnv.port;
+listenPort = 3000
+var noHitImagePage = '/img/noHits.png';
+var failImagePage = '/img/renderFail.png';
 
 app.use(express.compiler({ src: __dirname + '/public', enable: ['less'] }));
 app.use(express.bodyParser());
@@ -71,16 +73,44 @@ app.post('/logEvent', function(req, res){
 });
 
 app.get('/heatmap/:url', function(req, res){
-	heatmapProvider.findEventsForUrlStraight ('click', req.params.url, function(err, docs){
-		var heatMapper = new HeatmapGenerator()
-		heatMapper.GenerateImage(docs, function(err, imageBuf) {
-			if (err) { res.send(404); }
-			else {
-				res.setHeader('Content-Length', imageBuf.length);
-				res.setHeader('Content-Type', 'image/x-png');
-				res.end(imageBuf);
+	var filenameExt = '.png';
+	var xWidth = parseInt(req.query.wx);
+	var yWidth = parseInt(req.query.wy);
+        var httpVer = req.httpVersion;
+        var reqUrl = req.params.url;
+
+        if (reqUrl.lastIndexOf(filenameExt) === reqUrl.length - filenameExt.length) {
+                reqUrl = reqUrl.slice(0, -1 * filenameExt.length);
+        }
+
+	heatmapProvider.findEventsForUrlStraight ('click', reqUrl, function(err, docs){
+		if (err) {
+			res.redirect(failImagePage);
+		}
+		else
+		{
+			if (docs.length == 0){
+				res.redirect(noHitImagePage);
 			}
-		});
+			else
+			{
+				var heatmapper = new HeatmapGenerator();
+				heatmapper.GenerateImage(docs, xWidth, yWidth, function(err, imageBuf) {
+					if (err) { res.redirect(failImagePage); }
+					else {
+						var now = new Date();
+						res.setHeader('Content-Length', imageBuf.length);
+						res.setHeader('Content-Type', 'image/png');
+						// Better hope no pre-1.0 or 1.0.x/pre1.1 servers are floating around
+						if ( httpVer != '1.0') {
+							res.setHeader('Cache-Control', 'max-age=30, s-maxage=30, no-cache, must-revalidate, proxy-revalidate');
+						}
+						res.setHeader('Expires', now.toUTCString());
+						res.end(imageBuf);
+					}
+				});
+			}
+		}
 	});
 });
 

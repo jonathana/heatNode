@@ -51,26 +51,17 @@ NODEHeatmap.prototype.start = function(imageLink) {
 		};
 
 		if (imageInfo['href'] != '') {
-			var xmlDoc = null ;
-			if (typeof window.ActiveXObject != 'undefined' ) {
-				xmlDoc = new ActiveXObject('Microsoft.XMLHTTP');
-			}else {
-				xmlDoc = new XMLHttpRequest();
-			}
-			xmlDoc.open( 'GET', imageInfo['href'], false );
-			xmlDoc.send( null );
-			
-			// image not found, return false insteaf of trying to render
-			if (xmlDoc.status != 200) { 
-				alert('No heatmap for ' + this.doc.URL);
-				return false;
-			}
 
 			// stretch overlay to fill page and fade in
 			var pageSize	= this.getPageSize();
 			var objOverlay	= this.doc.getElementById('htNodeHOverlay');
 			var objBody		= this.doc.getElementsByTagName("body").item(0);
-			
+
+			objOverlay.style.top = "0px";
+			objOverlay.style.left = "0px";
+			objOverlay.style.height = pageSize[1] + "px";
+			objOverlay.style.display = '';
+
 			var imgObj = this.doc.getElementById(this.imgId);
 			if (imgObj) {
 				objOverlay.removeChild(imgObj);
@@ -81,11 +72,6 @@ NODEHeatmap.prototype.start = function(imageLink) {
 			imgObj.setAttribute('alt', imageInfo['title']);
 			objOverlay.appendChild(imgObj);
 			
-			objOverlay.style.top = "0px";
-			objOverlay.style.left = "0px";
-			objOverlay.style.height = pageSize[1] + "px";
-			objOverlay.style.display = '';
-
 			if (this.ie && !this.ie7) {	this.toggleSelects('hide');	}
 			
 			// Hide flash objects (should add a boolean to disable this)
