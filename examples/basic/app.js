@@ -30,9 +30,6 @@ var heatNode = require('heatNode');
 
 var app = module.exports = express.createServer();
 
-var noHitImagePage = '/img/noHits.png';
-var failImagePage = '/img/renderFail.png';
-
 app.use(express.favicon());
 app.use(express.compiler({ src: __dirname + '/public', enable: ['less'] }));
 app.use(express.bodyParser());
