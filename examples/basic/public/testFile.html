@@ -21,7 +21,7 @@
 			$(document).ready(function() {
 				$(document.body).mousedown(function(e){
 					var clickTarget = analyzeSourceElement(e.srcElement);
-					var url = '/logEvent?type=click' +
+					var url = '/heatNode/logEvent?type=click' +
 						'&x=' + e.pageX +
 						'&y=' + e.pageY +
 						'&clickTarget=' + encodeURIComponent(clickTarget);

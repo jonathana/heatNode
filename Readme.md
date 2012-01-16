@@ -5,8 +5,7 @@ click activity (currently, really just onMouseDown events) and logs them, and pr
 to generate a png overlay over the page showing how "hot" regions of the page are for clicks
 (mouseDown events).
 
-There are 2 versions of the typical app.js file.  app.js is built using the Mongoose object<->
-document mapper.  app_no_mongoose.js uses the "native" node mongodb driver.
+This is built as connect/express middleware.  To use it, just add it like any other middleware.
 
 Code is released under a MIT license, except portions copyright and released under a Creative
 Commons Attribution 3.0 license.

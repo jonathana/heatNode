@@ -74,7 +74,7 @@ NODEHeatmap.prototype.generateWindowSizeQueryString = function() {
 NODEHeatmap.prototype.start = function(imageLink) {
 	if (imageLink.getAttribute('rel').toLowerCase() == 'htnodeheatmap') { 
 		var imageInfo = {
-			'href': '/heatmap' + this.calculateUriPath() + this.generateWindowSizeQueryString(),
+			'href': '/heatNode/heatmap' + this.calculateUriPath() + this.generateWindowSizeQueryString(),
 			'title': imageLink.getAttribute('title')
 		};
 
